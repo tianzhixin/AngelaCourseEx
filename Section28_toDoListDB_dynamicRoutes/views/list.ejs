@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>My To-do List</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <h1 id="heading" class="box"> <%= listName %> </h1>
+    <div class="box">
+      <form class="" action="/delete" method="post">
+        <% listItems.forEach(item=>{ %>
+          <div class="item">
+            <input type="checkbox" name="checkBox" value="<%= item._id %>" onChange="this.form.submit()">
+            <p> <%= item.name %> </p>
+          </div>
+        <% }) %>
+      </form>
+
+
+      <form action="/" method="post" class="item">
+        <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
+        <button class="button" type="submit" name="list" value=<%= listName %>>+</button>
+      </form>
+    </div>
+
+  </body>
+</html>
