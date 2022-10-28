@@ -48,6 +48,8 @@ app.get("/",(req,res)=>{
 
 app.post("/",(req,res)=>{
   console.log(req.body.add);
+  console.log("req.body.list: " + req.body.list);
+
   // List.findOne({items:{_id:req.body.add}},(err,result)=>{
   //     if (err){
   //       console.log(err);
@@ -75,16 +77,21 @@ app.post("/",(req,res)=>{
 })
 
 app.post("/delete",(req,res)=>{
-  // console.log(req.body.checkBox);
+  console.log("req.body.list: " + req.body.list);
   List.findOneAndUpdate(
-    {name: req.body.listName},
+    {name: req.body.list},
     {$pull: {items:{_id:req.body.checkBox}}},
     (err,suc)=>{
       if (err){
         console.log(err);
       } else {
-        console.log(req.body.checkBox);
-        res.redirect("/");
+        console.log("req.body.checkBox: " + req.body.checkBox);
+        if (req.body.list==="homeList"){
+          res.redirect("/");
+        } else {
+          console.log("post, delete, redirect to /myList/" + req.body.list);
+          res.redirect("/myList/"+req.body.list)
+        }
       }
     }
   );
@@ -101,6 +108,7 @@ app.get("/myList/:listName",(req,res)=>{
           items: [item1, item2]
         });
         newList.save();
+        console.log("get, redirect to /myList/" + listName);
         res.redirect("/myList/" + listName)
       } else {
         res.render("list",{listName:listName, listItems:list[0].items});

@@ -12,6 +12,7 @@
     <h1 id="heading" class="box"> <%= listName %> </h1>
     <div class="box">
       <form class="" action="/delete" method="post">
+        <input type="hidden" name="list" value=<%= listName %>>
         <% listItems.forEach(item=>{ %>
           <div class="item">
             <input type="checkbox" name="checkBox" value="<%= item._id %>" onChange="this.form.submit()">
