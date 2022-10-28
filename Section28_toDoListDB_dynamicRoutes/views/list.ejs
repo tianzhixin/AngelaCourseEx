@@ -15,7 +15,7 @@
         <input type="hidden" name="list" value=<%= listName %>>
         <% listItems.forEach(item=>{ %>
           <div class="item">
-            <input type="checkbox" name="checkBox" value="<%= item._id %>" onChange="this.form.submit()">
+            <input type="checkbox" name="itemId" value="<%= item._id %>" onChange="this.form.submit()">
             <p> <%= item.name %> </p>
           </div>
         <% }) %>

@@ -1,16 +1,29 @@
-const express = require("express");
+// Goal:
+// Create a to-do list home page and a to-do list dynamic routes.
+
+// Requirements:
+// Can do add items and delete items. => post requests of express.
+// Added and deleted items are permanant. => Database
+// Dyanmic routes: express. EJS templates and EJS layouts.
+
+// Realization:
+// Front-end: EJS+HTML, CSS+BOOTSTRAP
+// Back-end: express for web application, mongoose for Database
+
+// Steps:
+// 1. Create a collection for this web application. Each document corresponds to
+//    each page. {listName: xxx, items: []}.
+// 2. Show webpage: get request. Render EJS file with listName and items passed in.
+// 3. Add items: button pressed. Post request. Add item to Database. Redirect to
+//    the page.
+// 4. Delete items: checkbox checked. post request. Delete item in Database. Redirect
+//    to the page.
+
+const express = require("express"); //For web application.
 const date = require(__dirname + "/date.js") //local module.
 const mongoose = require("mongoose");
 // Database code
 mongoose.connect('mongodb://localhost:27017/toDoList');
-// Item collection
-// const itemSchema = new mongoose.Schema({
-//   name: {
-//     type: String,
-//     required: true
-//   }
-// });
-// const Item = mongoose.model("Item",itemSchema);
 // List collection
 const listSchema = new mongoose.Schema({
   name: String,
@@ -41,23 +54,11 @@ app.use(express.static(__dirname + '/public')) // To use static files (styles.cs
 // Get and post requests
 app.get("/",(req,res)=>{
   List.find({name:"homeList"},(err,listsFound)=>{
-    console.log(listsFound);
     res.render("list",{listName:"homeList", listItems:listsFound[0].items});
   });
 })
 
 app.post("/",(req,res)=>{
-  console.log(req.body.add);
-  console.log("req.body.list: " + req.body.list);
-
-  // List.findOne({items:{_id:req.body.add}},(err,result)=>{
-  //     if (err){
-  //       console.log(err);
-  //     } else {
-  //       console.log("Found\n" + result);
-  //     }
-  // })
-
   List.findOneAndUpdate(
     {name:req.body.list},
     {$push:{items:{name:req.body.newItem}}},
@@ -77,19 +78,16 @@ app.post("/",(req,res)=>{
 })
 
 app.post("/delete",(req,res)=>{
-  console.log("req.body.list: " + req.body.list);
   List.findOneAndUpdate(
     {name: req.body.list},
-    {$pull: {items:{_id:req.body.checkBox}}},
+    {$pull: {items:{_id:req.body.itemId}}},
     (err,suc)=>{
       if (err){
         console.log(err);
       } else {
-        console.log("req.body.checkBox: " + req.body.checkBox);
         if (req.body.list==="homeList"){
           res.redirect("/");
         } else {
-          console.log("post, delete, redirect to /myList/" + req.body.list);
           res.redirect("/myList/"+req.body.list)
         }
       }
@@ -101,14 +99,12 @@ app.get("/myList/:listName",(req,res)=>{
   const listName = req.params.listName;
   List.find({name:listName},(err,list)=>{
     if (!err){
-      // console.log(list);
       if (list.length === 0){
         const newList = new List({
           name: listName,
           items: [item1, item2]
         });
         newList.save();
-        console.log("get, redirect to /myList/" + listName);
         res.redirect("/myList/" + listName)
       } else {
         res.render("list",{listName:listName, listItems:list[0].items});
